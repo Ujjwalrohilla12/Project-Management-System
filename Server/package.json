@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "postinstall": "npx prisma generate",
-    "start": "prisma generate && node server.js",
+    "build": "tsc",
+    "start": "node server.js",
     "server": "nodemon server.js"
   },
   "keywords": [],
@@ -23,8 +24,11 @@
     "prisma": "^7.4.2"
   },
   "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.0.0",
     "install": "^0.13.0",
     "nodemon": "^3.1.14",
-    "npm": "^11.6.0"
+    "npm": "^11.6.0",
+    "typescript": "^5.7.2"
   }
 }
