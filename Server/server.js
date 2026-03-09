@@ -4,7 +4,7 @@ import cors from 'cors';
 import { clerkMiddleware } from '@clerk/express'
 import { serve } from "inngest/express";
 import { inngest, functions } from "./dist/inngest/index.js"
-import { handleClerkWebhook } from "./dist/inngest/webhook.js"
+import { handleClerkWebhook } from "./dist/routes/clerk-webhook.js"
 
 const app = express();
 
