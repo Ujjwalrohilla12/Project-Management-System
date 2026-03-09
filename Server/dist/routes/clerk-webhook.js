@@ -7,22 +7,12 @@ export async function handleClerkWebhook(req, res) {
             console.error('Missing CLERK_WEBHOOK_SECRET');
             return res.status(500).json({ error: 'Server configuration error' });
         }
-        const svix_id = req.headers['svix-id'];
-        const svix_timestamp = req.headers['svix-timestamp'];
-        const svix_signature = req.headers['svix-signature'];
-        if (!svix_id || !svix_timestamp || !svix_signature) {
-            console.error('Missing svix headers');
-            return res.status(400).json({ error: 'Missing headers' });
-        }
-        const payload = JSON.stringify(req.body);
+        const payload = req.body;
+        const headers = req.headers;
         const wh = new Webhook(WEBHOOK_SECRET);
         let evt;
         try {
-            evt = wh.verify(payload, {
-                'svix-id': svix_id,
-                'svix-timestamp': svix_timestamp,
-                'svix-signature': svix_signature,
-            });
+            evt = wh.verify(JSON.stringify(payload), headers);
         }
         catch (err) {
             console.error('Webhook verification failed:', err);
