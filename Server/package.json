@@ -14,17 +14,17 @@
   "license": "ISC",
   "dependencies": {
     "@clerk/express": "^1.7.76",
-    "cors": "^2.8.6",
-    "express": "^5.2.1",
-    "inngest": "^3.52.6"
-  },
-  "devDependencies": {
     "@prisma/adapter-neon": "^7.4.2",
     "@prisma/client": "^7.4.2",
+    "cors": "^2.8.6",
     "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "inngest": "^3.52.6",
+    "prisma": "^7.4.2"
+  },
+  "devDependencies": {
     "install": "^0.13.0",
     "nodemon": "^3.1.14",
-    "npm": "^11.6.0",
-    "prisma": "^7.4.2"
+    "npm": "^11.6.0"
   }
 }
