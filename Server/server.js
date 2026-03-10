@@ -3,6 +3,7 @@ import 'dotenv/config';
 import cors from 'cors';
 import { clerkMiddleware } from '@clerk/express'
 import { handleClerkWebhook } from "./dist/routes/clerk-webhook.js"
+import { syncUserCreation, syncUserDeletion, syncUserUpdation } from "./dist/inngest/user-sync.js";
 
 const app = express();
 
