@@ -1,5 +1,5 @@
 import { Webhook } from 'svix';
-import { prisma } from '../configs/prisma.js';
+import { inngest } from '../inngest/index.js';
 export async function handleClerkWebhook(req, res) {
     try {
         const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
@@ -21,34 +21,11 @@ export async function handleClerkWebhook(req, res) {
         const eventType = evt.type;
         const data = evt.data;
         console.log('Received event:', eventType);
-        if (eventType === 'user.created') {
-            await prisma.user.create({
-                data: {
-                    id: data.id,
-                    email: data.email_addresses[0]?.email_address || '',
-                    name: `${data.first_name || ''} ${data.last_name || ''}`.trim() || null,
-                    image: data.image_url || null,
-                }
-            });
-            console.log('User created:', data.id);
-        }
-        else if (eventType === 'user.updated') {
-            await prisma.user.update({
-                where: { id: data.id },
-                data: {
-                    email: data.email_addresses[0]?.email_address || '',
-                    name: `${data.first_name || ''} ${data.last_name || ''}`.trim() || null,
-                    image: data.image_url || null,
-                }
-            });
-            console.log('User updated:', data.id);
-        }
-        else if (eventType === 'user.deleted') {
-            await prisma.user.delete({
-                where: { id: data.id }
-            });
-            console.log('User deleted:', data.id);
-        }
+        // Send to Inngest
+        await inngest.send({
+            name: `clerk/${eventType}`,
+            data: data
+        });
         return res.status(200).json({ success: true });
     }
     catch (error) {
