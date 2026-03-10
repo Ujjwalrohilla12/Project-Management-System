@@ -12,4 +12,26 @@ model User {
   name      String?
   image     String?
   createdAt DateTime @default(now())
+  workspaceMembers WorkspaceMember[]
+}
+
+model Workspace {
+  id        String   @id
+  name      String
+  slug      String   @unique
+  ownerId   String
+  image_url String?
+  createdAt DateTime @default(now())
+  members   WorkspaceMember[]
+}
+
+model WorkspaceMember {
+  id          String   @id @default(cuid())
+  userId      String
+  workspaceId String
+  role        String   @default("MEMBER")
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  @@unique([userId, workspaceId])
 }
