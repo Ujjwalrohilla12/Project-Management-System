@@ -10,11 +10,20 @@ export async function syncUserCreation(data) {
     });
 }
 export async function syncUserDeletion(data) {
-    await prisma.user.delete({
-        where: {
-            id: data.id,
+    try {
+        await prisma.user.delete({
+            where: {
+                id: data.id,
+            }
+        });
+    }
+    catch (error) {
+        if (error.code === 'P2025') {
+            console.log('User not found, skipping delete:', data.id);
+            return;
         }
-    });
+        throw error;
+    }
 }
 export async function syncUserUpdation(data) {
     await prisma.user.update({
