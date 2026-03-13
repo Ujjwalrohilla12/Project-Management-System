@@ -1,5 +1,5 @@
 import express from "express";
-import { createProject , updateProject , addMember } from "../dist/controller/projectController.js";
+import { createProject , updateProject , addMember } from "../controller/projectController.js";
 
 const projectRouter = express.Router();
 
