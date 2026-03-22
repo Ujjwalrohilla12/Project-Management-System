@@ -1,4 +1,4 @@
-import { prisma } from "../dist/configs/prisma";
+import { prisma } from "../configs/prisma.js";
 
 // Create Project
 export const createProject = async (req, res) => {

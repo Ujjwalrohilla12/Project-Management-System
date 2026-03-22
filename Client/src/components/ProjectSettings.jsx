@@ -16,7 +16,6 @@ export default function ProjectSettings({ project }) {
     });
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -93,8 +92,8 @@ export default function ProjectSettings({ project }) {
                     </div>
 
                     {/* Save Button */}
-                    <button type="submit" disabled={isSubmitting} className="ml-auto flex items-center text-sm justify-center gap-2 bg-gradient-to-br from-blue-500 to-blue-600 text-white px-4 py-2 rounded" >
-                        <Save className="size-4" /> {isSubmitting ? "Saving..." : "Save Changes"}
+                    <button type="submit" className="ml-auto flex items-center text-sm justify-center gap-2 bg-gradient-to-br from-blue-500 to-blue-600 text-white px-4 py-2 rounded" >
+                        <Save className="size-4" /> Save Changes
                     </button>
                 </form>
             </div>

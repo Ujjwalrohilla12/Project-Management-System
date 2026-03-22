@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toggleTheme } from '../features/themeSlice'
 import { MoonIcon, SunIcon } from 'lucide-react'
 import { assets } from '../assets/assets'
-import {UserButton} from '@clerk/clerk-react'
+import { UserButton } from '@clerk/clerk-react'
 
 const Navbar = ({ setIsSidebarOpen }) => {
 
@@ -44,7 +44,16 @@ const Navbar = ({ setIsSidebarOpen }) => {
                     </button>
 
                     {/* User Button */}
-                    <UserButton/>
+                    <UserButton 
+                        appearance={{
+                            elements: {
+                                avatarBox: "w-7 h-7",
+                                userButtonPopoverCard: "bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-700",
+                                userButtonPopoverActionButton: "text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800",
+                                userButtonPopoverActionButtonText: "text-gray-700 dark:text-zinc-300"
+                            }
+                        }}
+                    />
                 </div>
             </div>
         </div>

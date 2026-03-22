@@ -1,0 +1,26 @@
+﻿
+> project-management@0.0.0 build
+> vite build
+
+node.exe : 'vite' is not 
+recognized as an internal 
+or external command,
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" "C:
+\Users\rohil\AppData\Roami
+ng\ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: ('  
+  vite' is not r...tern   
+ al command,:String) [    
+], RemoteException
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+operable program or batch 
+file.

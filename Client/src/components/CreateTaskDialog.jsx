@@ -8,7 +8,6 @@ export default function CreateTaskDialog({ showCreateTask, setShowCreateTask, pr
     const project = currentWorkspace?.projects.find((p) => p.id === projectId);
     const teamMembers = project?.members || [];
 
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         title: "",
         description: "",
@@ -109,8 +108,8 @@ export default function CreateTaskDialog({ showCreateTask, setShowCreateTask, pr
                         <button type="button" onClick={() => setShowCreateTask(false)} className="rounded border border-zinc-300 dark:border-zinc-700 px-5 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 transition" >
                             Cancel
                         </button>
-                        <button type="submit" disabled={isSubmitting} className="rounded px-5 py-2 text-sm bg-gradient-to-br from-blue-500 to-blue-600 hover:opacity-90 text-white dark:text-zinc-200 transition" >
-                            {isSubmitting ? "Creating..." : "Create Task"}
+                        <button type="submit" className="rounded px-5 py-2 text-sm bg-gradient-to-br from-blue-500 to-blue-600 hover:opacity-90 text-white dark:text-zinc-200 transition" >
+                            Create Task
                         </button>
                     </div>
                 </form>

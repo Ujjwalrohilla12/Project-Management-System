@@ -5,7 +5,9 @@
     font-family: 'Outfit', sans-serif;
 }
 
+/* stylelint-disable at-rule-no-unknown */
 @custom-variant dark (&:where(.dark, .dark *));
+/* stylelint-enable at-rule-no-unknown */
 
 .no-scrollbar::-webkit-scrollbar {
     display: none;

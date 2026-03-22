@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { CalendarIcon, MessageCircle, PenIcon } from "lucide-react";
 import { assets } from "../assets/assets";
@@ -25,7 +25,7 @@ const TaskDetails = () => {
 
     };
 
-    const fetchTaskDetails = async () => {
+    const fetchTaskDetails = useCallback(async () => {
         setLoading(true);
         if (!projectId || !taskId) return;
 
@@ -38,7 +38,7 @@ const TaskDetails = () => {
         setTask(tsk);
         setProject(proj);
         setLoading(false);
-    };
+    }, [currentWorkspace, projectId, taskId]);
 
     const handleAddComment = async () => {
         if (!newComment.trim()) return;
@@ -63,7 +63,7 @@ const TaskDetails = () => {
         }
     };
 
-    useEffect(() => { fetchTaskDetails(); }, [taskId]);
+    useEffect(() => { fetchTaskDetails(); }, [taskId, fetchTaskDetails]);
 
     useEffect(() => {
         if (taskId && task) {

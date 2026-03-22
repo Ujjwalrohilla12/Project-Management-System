@@ -17,7 +17,7 @@ export default function StatsGrid() {
 
     const statCards = [
         {
-            icon: FolderOpen,
+            Icon: FolderOpen,
             title: "Total Projects",
             value: stats.totalProjects,
             subtitle: `projects in ${currentWorkspace?.name}`,
@@ -25,7 +25,7 @@ export default function StatsGrid() {
             textColor: "text-blue-500",
         },
         {
-            icon: CheckCircle,
+            Icon: CheckCircle,
             title: "Completed Projects",
             value: stats.completedProjects,
             subtitle: `of ${stats.totalProjects} total`,
@@ -33,7 +33,7 @@ export default function StatsGrid() {
             textColor: "text-emerald-500",
         },
         {
-            icon: Users,
+            Icon: Users,
             title: "My Tasks",
             value: stats.myTasks,
             subtitle: "assigned to me",
@@ -41,7 +41,7 @@ export default function StatsGrid() {
             textColor: "text-purple-500",
         },
         {
-            icon: AlertTriangle,
+            Icon: AlertTriangle,
             title: "Overdue",
             value: stats.overdueIssues,
             subtitle: "need attention",
@@ -80,7 +80,8 @@ export default function StatsGrid() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 my-9">
             {statCards.map(
-                ({ icon: Icon, title, value, subtitle, bgColor, textColor }, i) => (
+                // eslint-disable-next-line no-unused-vars
+                ({ Icon: IconComponent, title, value, subtitle, bgColor, textColor }, i) => (
                     <div key={i} className="bg-white dark:bg-zinc-950 dark:bg-gradient-to-br dark:from-zinc-800/70 dark:to-zinc-900/50 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 transition duration-200 rounded-md" >
                         <div className="p-6 py-4">
                             <div className="flex items-start justify-between">
@@ -98,7 +99,7 @@ export default function StatsGrid() {
                                     )}
                                 </div>
                                 <div className={`p-3 rounded-xl ${bgColor} bg-opacity-20`}>
-                                    <Icon size={20} className={textColor} />
+                                    <IconComponent size={20} className={textColor} />
                                 </div>
                             </div>
                         </div>

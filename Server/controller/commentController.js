@@ -1,4 +1,4 @@
-import prisma from "../configs/prisma.js"
+import { prisma } from "../configs/prisma.js"
 
 // Add comment 
 export const addComment = async (req,res) => {
@@ -53,6 +53,6 @@ export const getTaskComments = async (req,res)=>{
         res.json({comments})
     }catch(error){
         console.log(error);
-        res.status(500).json({message:error.code || error.message}),
+        res.status(500).json({message:error.code || error.message});
     }
 }
