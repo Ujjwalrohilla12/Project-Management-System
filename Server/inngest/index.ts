@@ -1,5 +1,6 @@
 import { Inngest } from "inngest";
 import { prisma } from "../configs/prisma.js";
+import { taskFunctions } from "./task-sync.js";
 
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "aegisflow" });
@@ -74,7 +75,7 @@ async function syncWorkspaceCreation(data: any) {
       data: {
         userId: data.created_by,
         workspaceId: data.id,
-        role: 'ADMIN'
+        role: 'ADMIN' as const
       }
     })
   } catch (error: any) {
@@ -188,5 +189,6 @@ export const functions = [
     syncWorkspaceCreationFn,
     syncWorkspaceUpdationFn,
     syncWorkspaceDeletionFn,
-    syncWorkspaceMemberCreationFn
+    syncWorkspaceMemberCreationFn,
+    ...taskFunctions
 ];

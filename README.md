@@ -1,193 +1,201 @@
-# Project Management System
+# AegisFlow — Project Management System
 
-A full-stack project management application built with React, Node.js, Express, and Prisma. This system helps teams collaborate on projects, manage tasks, and track progress with real-time updates and analytics.
+A full-stack project management application built with React, Node.js, Express, Prisma, and Clerk Authentication.
 
 ## 🌟 Features
 
-- **Project Management**: Create, update, and manage multiple projects
-- **Task Management**: Organize tasks with detailed descriptions, assignees, and deadlines
-- **Team Collaboration**: Add team members, manage workspace permissions
-- **Project Analytics**: Track project progress and performance metrics
-- **Activity Tracking**: Monitor recent activities across projects
-- **Calendar View**: Visualize project timelines and task schedules
-- **Task Dashboard**: Personal task management with summary statistics
-- **Workspace Management**: Organize projects into workspaces
+- **Workspace Management** — Create and switch between multiple workspaces
+- **Project Management** — Create, update, and manage projects with status/priority tracking
+- **Task Management** — Organize tasks with types, assignees, priorities, and due dates
+- **Team Collaboration** — Add workspace and project members with role-based access
+- **Project Analytics** — Charts for task status, type, and priority breakdowns
+- **Calendar View** — Visualize task due dates on a calendar
+- **Task Discussion** — Real-time comment threads per task (polling every 15s)
+- **Dashboard** — Stats grid, recent activity, and personal task summary
+- **Dark Mode** — Full dark/light theme toggle with persistence
+- **Protected Routes** — Clerk-authenticated routes on both client and server
 
 ## 📋 Tech Stack
 
 ### Client
-- **React 18** - UI library
-- **Vite** - Build tool and dev server
-- **Redux Toolkit** - State management
-- **CSS** - Styling
+- **React 18** + **Vite** — UI and build tooling
+- **Redux Toolkit** — Global state (workspaces, theme)
+- **Tailwind CSS v4** — Styling
+- **Clerk React** — Authentication
+- **Axios** — HTTP client with auth interceptor
+- **react-hot-toast** — Toast notifications
+- **Recharts** — Analytics charts
+- **date-fns** — Date formatting
 
 ### Server
-- **Node.js** - Runtime environment
-- **Express** - Web framework
-- **Prisma** - ORM for database
-- **Clerk** - Authentication service
-- **Inngest** - Background jobs
+- **Node.js** + **Express 5** — API server
+- **Prisma ORM** + **Neon PostgreSQL** — Database
+- **Clerk Express** — Auth middleware
+- **Inngest** — Background jobs (user/workspace sync from Clerk webhooks)
+- **Svix** — Webhook verification
+
+## 🏗️ Architecture
+
+```
+Project-Management-System/
+├── Client/
+│   └── src/
+│       ├── app/            # Redux store
+│       ├── assets/         # Static assets + dummy data (dev only)
+│       ├── components/     # Feature components
+│       │   └── ui/         # Reusable UI primitives (Modal, Skeleton)
+│       ├── configs/        # Axios instance with auth interceptor
+│       ├── features/       # Redux slices (workspace, theme)
+│       ├── hooks/          # Reusable hooks (useWorkspaces, useComments)
+│       ├── pages/          # Route-level page components
+│       ├── services/       # API service layer (all endpoint calls)
+│       └── utils/          # Helper functions, color maps
+│
+└── Server/
+    ├── configs/            # Prisma client
+    ├── controller/         # Route handlers (fixed bugs)
+    ├── inngest/            # Background job functions
+    ├── middleware/         # errorHandler, requestLogger, responseFormatter
+    ├── prisma/             # schema.prisma (complete with all models)
+    ├── routes/             # Clean Express routers
+    └── server.js           # App entry point
+```
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v14 or higher)
-- npm or yarn
-- Git
+- Node.js v18+
+- npm
+- Neon PostgreSQL database
+- Clerk account
 
 ### Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd Project-Management-System
-   ```
+```bash
+# Clone
+git clone <repository-url>
+cd Project-Management-System
 
-2. **Install Client dependencies**
-   ```bash
-   cd Client
-   npm install
-   ```
+# Install client deps
+cd Client && npm install
 
-3. **Install Server dependencies**
-   ```bash
-   cd ../Server
-   npm install
-   ```
+# Install server deps
+cd ../Server && npm install
+```
 
 ### Environment Setup
 
-#### Server (.env)
-Create a `.env` file in the Server directory with:
+**Server `.env`**
 ```
-DATABASE_URL=your_database_url
-CLERK_API_KEY=your_clerk_api_key
-CLERK_SECRET_KEY=your_clerk_secret_key
-```
-
-#### Client (.env)
-Create a `.env` file in the Client directory with:
-```
-VITE_API_URL=http://localhost:3000
-VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+NODE_ENV=development
+DATABASE_URL=your_neon_pooled_connection_string
+DIRECT_URL=your_neon_direct_connection_string
+CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
+CLERK_WEBHOOK_SECRET=whsec_...
+INNGEST_EVENT_KEY=...
+INNGEST_SIGNING_KEY=...
+PORT=5000
 ```
 
-### Running the Application
-
-1. **Start the Server**
-   ```bash
-   cd Server
-   npm start
-   ```
-   The server will run on `http://localhost:3000`
-
-2. **Start the Client (in a new terminal)**
-   ```bash
-   cd Client
-   npm run dev
-   ```
-   The client will run on `http://localhost:5173`
-
-## 📁 Project Structure
-
+**Client `.env`**
 ```
-Project-Management-System/
-├── Client/                 # React frontend
-│   ├── src/
-│   │   ├── components/    # Reusable components
-│   │   ├── pages/         # Page components
-│   │   ├── features/      # Redux slices
-│   │   ├── configs/       # Configuration files
-│   │   └── assets/        # Static assets
-│   └── vite.config.js
-│
-└── Server/                 # Node.js backend
-    ├── controller/        # Route controllers
-    ├── route/            # API routes
-    ├── prisma/           # Database schema
-    ├── configs/          # Configuration files
-    ├── inngest/          # Background jobs
-    └── server.js
+VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
+VITE_BASEURL=http://localhost:5000
 ```
 
-## 🔑 Key Components
-
-### Client Components
-- **Dashboard** - Main landing page
-- **ProjectDetails** - Detailed project view with tasks and analytics
-- **Projects** - Project listing and management
-- **Team** - Team member management
-- **TaskDetails** - Individual task view and editing
-- **Navbar** - Top navigation
-- **Sidebar** - Navigation sidebar with project list
-
-### Server Endpoints
-- `/api/projects/*` - Project CRUD operations
-- `/api/tasks/*` - Task management
-- `/api/workspace/*` - Workspace operations
-- `/api/comments/*` - Comment system
-- `/api/auth/*` - Authentication (via Clerk)
-
-## 🔐 Authentication
-
-This application uses **Clerk** for authentication. Users can sign up, log in, and manage their account through Clerk's authentication system.
-
-## 📊 Database
-
-The application uses **Prisma ORM** with the schema defined in `prisma/schema.prisma`. To sync your database with the schema:
+### Database Setup
 
 ```bash
 cd Server
-npx prisma migrate dev
+npx prisma migrate dev --name init
+npx prisma generate
 ```
 
-## 🔄 Background Jobs
+### Running
 
-**Inngest** handles background jobs including:
-- User synchronization
-- Workspace synchronization
-
-## 📝 API Documentation
-
-Refer to the route files in `Server/route/` for API endpoint documentation.
-
-## 🛠️ Development
-
-### Client Development
 ```bash
+# Terminal 1 — Server
+cd Server
+npm run dev
+
+# Terminal 2 — Client
 cd Client
-npm run dev      # Start development server
-npm run build    # Build for production
-npm run lint     # Run ESLint
+npm run dev
 ```
 
-### Server Development
-```bash
-cd Server
-npm start        # Start server
-npm run dev      # Development mode with hot reload
-```
+## 🔑 API Endpoints
 
-## 🚢 Deployment
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/workspaces` | Get user's workspaces |
+| POST | `/api/workspaces` | Create workspace |
+| PUT | `/api/workspaces/:id` | Update workspace |
+| POST | `/api/workspaces/:id/members` | Add workspace member |
+| GET | `/api/projects/:id` | Get project |
+| POST | `/api/projects` | Create project |
+| PUT | `/api/projects` | Update project |
+| POST | `/api/projects/:projectId/members` | Add project member |
+| GET | `/api/tasks/project/:projectId` | Get tasks by project |
+| POST | `/api/tasks` | Create task |
+| PUT | `/api/tasks/:id` | Update task |
+| DELETE | `/api/tasks` | Delete tasks (bulk) |
+| GET | `/api/comments/:taskId` | Get task comments |
+| POST | `/api/comments` | Add comment |
 
-### Client
-The client is configured for deployment on **Vercel**. Push to your repository and Vercel will automatically build and deploy.
+## ✅ Missing Feature Checklist
 
-### Server
-The server can be deployed to any Node.js hosting service. Update environment variables as needed for production.
+- [ ] **Notifications** — In-app notification system for task assignments and comments
+- [ ] **File Attachments** — Upload files to tasks (S3/Cloudflare R2)
+- [ ] **Search** — Global search across projects and tasks (navbar search is currently UI-only)
+- [ ] **Workspace Settings page** — Dedicated page to manage workspace name, image, members
+- [ ] **Create Workspace UI** — The "Create Workspace" button in the dropdown has no handler
+- [ ] **Delete Project** — No delete project endpoint or UI
+- [ ] **Remove Member** — No remove member from workspace/project functionality
+- [ ] **Task Comments pagination** — Load more comments for large threads
+- [ ] **Optimistic UI updates** — Currently refetches on every mutation
+- [ ] **React Query** — Replace manual fetch/loading state with TanStack Query
+- [ ] **Zod validation** — Add schema validation on both client forms and server request bodies
+- [ ] **TypeScript migration** — Client is still `.jsx`; migrate to `.tsx`
+- [ ] **Rate limiting** — Add express-rate-limit to API
+- [ ] **Refresh token handling** — Handle Clerk token expiry gracefully
+- [ ] **E2E tests** — Playwright test suite
+
+## 🗺️ Implementation Roadmap
+
+### Phase 1 — Foundation ✅ (Complete)
+- [x] Prisma schema with all models (User, Workspace, Project, ProjectMember, Task, Comment)
+- [x] Controller/service/repository architecture
+- [x] Async error handler + global error middleware
+- [x] Request logger middleware
+- [x] Centralized response formatter
+- [x] Clean routes folder (eliminated duplicate route/routes confusion)
+- [x] All controller bugs fixed (commentController, taskController updateTask, addMember)
+- [x] API service layer on client
+- [x] Axios interceptor with Clerk token injection
+- [x] useWorkspaces hook bootstrapping real data
+- [x] useComments hook with polling
+- [x] Redux workspaceSlice with setLoading, no dummy data
+- [x] All forms wired to real API (CreateProject, CreateTask, ProjectSettings, InviteMember, AddProjectMember)
+- [x] Real Clerk userId used everywhere (replaced hardcoded user_1)
+- [x] Skeleton loaders
+- [x] Reusable Modal component
+- [x] Utility helpers (formatDate, STATUS_COLORS, PRIORITY_COLORS)
+
+### Phase 2 — Features (Next)
+- [ ] Workspace creation UI
+- [ ] Delete project
+- [ ] Remove member
+- [ ] Global search implementation
+- [ ] Notifications system
+
+### Phase 3 — Quality
+- [ ] React Query integration
+- [ ] Zod validation (client + server)
+- [ ] TypeScript migration (client)
+- [ ] Rate limiting
+- [ ] E2E tests
 
 ## 📄 License
 
-This project is licensed under the MIT License - see [LICENSE.md](LICENSE.md) for details.
-
-## 🤝 Contributing
-
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-## 📧 Support
-
-For issues and questions, please create an issue in the repository.
-
----
-
-**Built with ❤️ by the Development Team**
+MIT License — see [LICENSE.md](Client/LICENSE.md)
