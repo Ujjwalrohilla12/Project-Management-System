@@ -161,6 +161,17 @@ export const cancelInvitationSchema = z.object({
   invitationId: nonEmptyString('Invitation ID'),
 });
 
+export const updateNotificationPreferencesSchema = z.object({
+  emailEnabled: z.boolean().optional(),
+  inAppEnabled: z.boolean().optional(),
+  taskAssigned: z.boolean().optional(),
+  taskDue: z.boolean().optional(),
+  projectUpdates: z.boolean().optional(),
+  teamMentions: z.boolean().optional(),
+  deadlineReminders: z.boolean().optional(),
+  weeklyDigest: z.boolean().optional(),
+});
+
 export const orgPaginationSchema = z.object({
   page:   z.coerce.number().int().min(1).default(1),
   limit:  z.coerce.number().int().min(1).max(100).default(20),

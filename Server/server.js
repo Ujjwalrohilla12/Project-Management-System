@@ -16,6 +16,7 @@ import projectRouter from './routes/projectRouter.js';
 import taskRouter from './routes/taskRouter.js';
 import commentRouter from './routes/commentRouter.js';
 import organizationRouter from './routes/organizationRouter.js';
+import notificationRouter from './routes/notificationRouter.js';
 import aiRouter from './routes/aiRouter.js';
 
 const app = express();
@@ -103,6 +104,7 @@ app.use('/api/inngest', serve({ client: inngest, functions }));
 // ── Protected API routes ───────────────────────────────────
 app.use('/api/workspaces',    authLimiter,  protect, workspaceRouter);
 app.use('/api/org',           authLimiter,  protect, organizationRouter);
+app.use('/api/notifications', authLimiter,  protect, notificationRouter);
 app.use('/api/projects',      authLimiter,  protect, projectRouter);
 app.use('/api/tasks',         writeLimiter, protect, taskRouter);
 app.use('/api/comments',      writeLimiter, protect, commentRouter);

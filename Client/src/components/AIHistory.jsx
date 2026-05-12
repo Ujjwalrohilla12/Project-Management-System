@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { aiService } from '../../services/api.service';
+import { aiService } from '../services/api.service.js';
 import { format } from 'date-fns';
 import { ClockIcon, CpuChipIcon, LightBulbIcon, ChartBarIcon, UserIcon } from '@heroicons/react/24/outline';
 

@@ -20,6 +20,9 @@ model User {
   aiLogs           AILog[]
   aiRecommendations AIRecommendation[]
   ownedProjects    Project[]         @relation("ProjectOwner")
+  notifications    Notification[]
+  notificationPreferences NotificationPreference?
+  workloadAnalyses WorkloadAnalysis[]
 }
 
 model Workspace {
@@ -103,6 +106,8 @@ model Project {
   owner       User?           @relation("ProjectOwner", fields: [team_lead], references: [id])
   aiLogs      AILog[]
   aiRecommendations AIRecommendation[]
+  workloadAnalyses WorkloadAnalysis[]
+  riskAssessments RiskAssessment[]
 
   @@index([workspaceId])
   @@index([status])
@@ -147,6 +152,7 @@ model Task {
   aiLogs         AILog[]
   aiRecommendations AIRecommendation[]
   aiGeneratedTasks AIGeneratedTask[]
+  riskAssessments RiskAssessment[]
 
   @@index([projectId])
   @@index([assigneeId])
@@ -253,6 +259,18 @@ enum InvitationStatus {
   CANCELLED
 }
 
+enum NotificationType {
+  TASK_ASSIGNED
+  TASK_DUE_SOON
+  TASK_OVERDUE
+  PROJECT_UPDATE
+  TEAM_MENTION
+  DEADLINE_REMINDER
+  WORKLOAD_ALERT
+  RISK_ALERT
+  SYSTEM_NOTIFICATION
+}
+
 model AILog {
   id          String   @id @default(cuid())
   userId      String
@@ -314,4 +332,91 @@ model AIGeneratedTask {
   parentTask     Task          @relation(fields: [parentTaskId], references: [id], onDelete: Cascade)
 
   @@index([parentTaskId])
+}
+
+model Notification {
+  id          String            @id @default(cuid())
+  userId      String
+  type        NotificationType
+  title       String
+  message     String
+  data        Json?             // additional notification data
+  isRead      Boolean           @default(false)
+  priority    Priority          @default(MEDIUM)
+  expiresAt   DateTime?
+  createdAt   DateTime          @default(now())
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
+}
+
+model NotificationPreference {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  emailEnabled      Boolean  @default(true)
+  inAppEnabled      Boolean  @default(true)
+  taskAssigned      Boolean  @default(true)
+  taskDue           Boolean  @default(true)
+  projectUpdates    Boolean  @default(true)
+  teamMentions      Boolean  @default(true)
+  deadlineReminders Boolean  @default(true)
+  weeklyDigest      Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Analytics {
+  id          String      @id @default(cuid())
+  entityType  String      // 'user', 'project', 'workspace'
+  entityId    String
+  metric      String      // 'productivity_score', 'completion_rate', 'workload_index', etc.
+  value       Float
+  period      String      // 'daily', 'weekly', 'monthly'
+  periodStart DateTime
+  periodEnd   DateTime
+  metadata    Json?       // additional analytics data
+  createdAt   DateTime    @default(now())
+
+  @@index([entityType, entityId])
+  @@index([metric, period])
+  @@index([periodStart, periodEnd])
+}
+
+model WorkloadAnalysis {
+  id            String   @id @default(cuid())
+  userId        String
+  projectId     String?
+  workloadScore Float    // 0-100 workload intensity
+  capacityScore Float    // 0-100 available capacity
+  burnoutRisk   Float    // 0-100 risk percentage
+  recommendations Json?  // AI-generated recommendations
+  analyzedAt    DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project       Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([analyzedAt])
+}
+
+model RiskAssessment {
+  id              String   @id @default(cuid())
+  projectId       String
+  taskId          String?
+  riskType        String   // 'delay', 'overdue', 'resource', 'dependency'
+  riskScore       Float    // 0-100 risk level
+  impactScore     Float    // 0-100 potential impact
+  probability     Float    // 0-100 likelihood
+  description     String
+  mitigationSteps Json?    // suggested mitigation actions
+  status          String   @default("active") // 'active', 'mitigated', 'resolved'
+  assessedAt      DateTime @default(now())
+  project         Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  task            Task?    @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([taskId])
+  @@index([riskType])
 }

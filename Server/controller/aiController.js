@@ -1,5 +1,5 @@
-const aiServiceManager = require('../services/ai/AIServiceManager');
-const { PrismaClient } = require('@prisma/client');
+import aiServiceManager from '../services/ai/AIServiceManager.js';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 const generateSubtasks = async (req, res) => {
   try {
     const { taskId } = req.params;
-    const userId = req.user.id;
+    const userId = req.userId;
 
     // Get task details
     const task = await prisma.task.findUnique({
@@ -75,7 +75,7 @@ const generateSubtasks = async (req, res) => {
 const estimateComplexity = async (req, res) => {
   try {
     const { taskId } = req.params;
-    const userId = req.user.id;
+    const userId = req.userId;
 
     const task = await prisma.task.findUnique({
       where: { id: taskId },
@@ -114,7 +114,7 @@ const estimateComplexity = async (req, res) => {
 const generateRecommendations = async (req, res) => {
   try {
     const { projectId } = req.params;
-    const userId = req.user.id;
+    const userId = req.userId;
 
     // Check project access
     const projectMember = await prisma.projectMember.findFirst({
@@ -188,7 +188,7 @@ const generateRecommendations = async (req, res) => {
 const suggestDependencies = async (req, res) => {
   try {
     const { projectId } = req.params;
-    const userId = req.user.id;
+    const userId = req.userId;
 
     const projectMember = await prisma.projectMember.findFirst({
       where: {
@@ -239,7 +239,7 @@ const suggestDependencies = async (req, res) => {
 const generateTaskSequence = async (req, res) => {
   try {
     const { projectId } = req.params;
-    const userId = req.user.id;
+    const userId = req.userId;
 
     const projectMember = await prisma.projectMember.findFirst({
       where: {
@@ -289,7 +289,7 @@ const generateTaskSequence = async (req, res) => {
  */
 const estimateWorkload = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.userId;
 
     const tasks = await prisma.task.findMany({
       where: {
@@ -331,7 +331,7 @@ const estimateWorkload = async (req, res) => {
  */
 const generateProductivitySuggestions = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.userId;
 
     // Get user's tasks and history
     const tasks = await prisma.task.findMany({
@@ -400,7 +400,7 @@ const generateProductivitySuggestions = async (req, res) => {
  */
 const getAIHistory = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.userId;
     const { page = 1, limit = 20 } = req.query;
 
     const skip = (page - 1) * limit;
@@ -444,7 +444,7 @@ const getAIHistory = async (req, res) => {
  */
 const getAIRecommendations = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.userId;
     const { type, accepted, page = 1, limit = 20 } = req.query;
 
     const skip = (page - 1) * limit;
@@ -495,7 +495,7 @@ const getAIRecommendations = async (req, res) => {
 const acceptRecommendation = async (req, res) => {
   try {
     const { recommendationId } = req.params;
-    const userId = req.user.id;
+    const userId = req.userId;
 
     const recommendation = await prisma.aIRecommendation.findFirst({
       where: {
@@ -533,7 +533,7 @@ const acceptRecommendation = async (req, res) => {
 const acceptGeneratedTask = async (req, res) => {
   try {
     const { taskId } = req.params;
-    const userId = req.user.id;
+    const userId = req.userId;
 
     const generatedTask = await prisma.aIGeneratedTask.findUnique({
       where: { id: taskId },
@@ -591,7 +591,7 @@ const acceptGeneratedTask = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   generateSubtasks,
   estimateComplexity,
   generateRecommendations,
@@ -602,5 +602,5 @@ module.exports = {
   getAIHistory,
   getAIRecommendations,
   acceptRecommendation,
-  acceptGeneratedTask
+  acceptGeneratedTask,
 };

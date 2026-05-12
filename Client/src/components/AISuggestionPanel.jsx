@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { aiService } from '../../services/api.service';
+import { aiService } from '../services/api.service.js';
 import { toast } from 'react-hot-toast';
 import { SparklesIcon, CpuChipIcon, LightBulbIcon, ClockIcon } from '@heroicons/react/24/outline';
 

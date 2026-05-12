@@ -225,6 +225,7 @@ const ProjectTasks = ({ tasks, projectId }) => {
             );
           }) : <p className="text-center text-zinc-500 py-4">No tasks found.</p>}
         </div>
+        </div>
       )}
     </div>
   );

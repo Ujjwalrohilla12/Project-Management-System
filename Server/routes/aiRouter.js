@@ -1,28 +1,37 @@
-const express = require('express');
-const router = express.Router();
-const aiController = require('../controller/aiController');
-const authMiddleware = require('./authMiddleware');
+import express from 'express';
+import {
+  generateSubtasks,
+  estimateComplexity,
+  generateRecommendations,
+  suggestDependencies,
+  generateTaskSequence,
+  estimateWorkload,
+  generateProductivitySuggestions,
+  getAIHistory,
+  getAIRecommendations,
+  acceptRecommendation,
+  acceptGeneratedTask,
+} from '../controller/aiController.js';
 
-// All AI routes require authentication
-router.use(authMiddleware);
+const router = express.Router();
 
 // Task AI features
-router.post('/tasks/:taskId/subtasks/generate', aiController.generateSubtasks);
-router.post('/tasks/:taskId/complexity', aiController.estimateComplexity);
+router.post('/tasks/:taskId/subtasks/generate', generateSubtasks);
+router.post('/tasks/:taskId/complexity', estimateComplexity);
 
 // Project AI features
-router.post('/projects/:projectId/recommendations', aiController.generateRecommendations);
-router.post('/projects/:projectId/dependencies', aiController.suggestDependencies);
-router.post('/projects/:projectId/sequence', aiController.generateTaskSequence);
+router.post('/projects/:projectId/recommendations', generateRecommendations);
+router.post('/projects/:projectId/dependencies', suggestDependencies);
+router.post('/projects/:projectId/sequence', generateTaskSequence);
 
 // User AI features
-router.post('/workload', aiController.estimateWorkload);
-router.post('/productivity', aiController.generateProductivitySuggestions);
+router.post('/workload', estimateWorkload);
+router.post('/productivity', generateProductivitySuggestions);
 
 // AI data management
-router.get('/history', aiController.getAIHistory);
-router.get('/recommendations', aiController.getAIRecommendations);
-router.put('/recommendations/:recommendationId/accept', aiController.acceptRecommendation);
-router.put('/generated-tasks/:taskId/accept', aiController.acceptGeneratedTask);
+router.get('/history', getAIHistory);
+router.get('/recommendations', getAIRecommendations);
+router.put('/recommendations/:recommendationId/accept', acceptRecommendation);
+router.put('/generated-tasks/:taskId/accept', acceptGeneratedTask);
 
-module.exports = router;
+export default router;

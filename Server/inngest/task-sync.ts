@@ -1,5 +1,6 @@
 import { inngest } from './index.js';
 import { prisma } from '../configs/prisma.js';
+import { createNotification } from '../utils/notification.js';
 
 // Recurring task processing
 async function processRecurringTasks() {
@@ -76,6 +77,88 @@ async function processRecurringTasks() {
   }
 }
 
+async function sendTaskNotification(userId: string, type: string, title: string, message: string, data: object) {
+  const preferences = await prisma.notificationPreference.findUnique({ where: { userId } });
+  if (preferences && !preferences.inAppEnabled) return;
+  if (type === 'TASK_DUE_SOON' && preferences?.deadlineReminders === false) return;
+  if (type === 'TASK_OVERDUE' && preferences?.taskDue === false) return;
+  if (type === 'WORKLOAD_ALERT' && preferences?.weeklyDigest === false) return;
+
+  await createNotification({
+    userId,
+    type,
+    title,
+    message,
+    data,
+    priority: 'HIGH',
+    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  });
+}
+
+async function processScheduledNotifications() {
+  const now = new Date();
+  const dueSoon = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+
+  const dueSoonTasks = await prisma.task.findMany({
+    where: {
+      assigneeId: { not: null },
+      status: { in: ['TODO', 'IN_PROGRESS'] },
+      due_date: { gte: now, lte: dueSoon },
+    },
+    include: { project: true },
+  });
+
+  for (const task of dueSoonTasks) {
+    await sendTaskNotification(
+      task.assigneeId,
+      'TASK_DUE_SOON',
+      'Upcoming due date',
+      `Your task “${task.title}” is due soon (${new Date(task.due_date).toLocaleDateString()}).`,
+      { taskId: task.id, projectId: task.projectId }
+    );
+  }
+
+  const overdueTasks = await prisma.task.findMany({
+    where: {
+      assigneeId: { not: null },
+      status: { in: ['TODO', 'IN_PROGRESS'] },
+      due_date: { lt: now },
+    },
+    include: { project: true },
+  });
+
+  for (const task of overdueTasks) {
+    await sendTaskNotification(
+      task.assigneeId,
+      'TASK_OVERDUE',
+      'Task overdue',
+      `Your task “${task.title}” is overdue. Please update progress or reassign as needed.`,
+      { taskId: task.id, projectId: task.projectId }
+    );
+  }
+
+  const workloadGroups = await prisma.task.groupBy({
+    by: ['assigneeId'],
+    where: {
+      assigneeId: { not: null },
+      status: { in: ['TODO', 'IN_PROGRESS'] },
+    },
+    _count: { id: true },
+  });
+
+  for (const group of workloadGroups) {
+    if (group._count.id >= 10) {
+      await sendTaskNotification(
+        group.assigneeId,
+        'WORKLOAD_ALERT',
+        'Workload alert',
+        `You have ${group._count.id} active tasks assigned. Consider rebalancing your workload.`,
+        { activeTasks: group._count.id }
+      );
+    }
+  }
+}
+
 // Inngest function for recurring tasks
 const processRecurringTasksFn = inngest.createFunction(
   { id: 'process-recurring-tasks' },
@@ -83,7 +166,8 @@ const processRecurringTasksFn = inngest.createFunction(
   async () => {
     console.log('Processing recurring tasks...');
     await processRecurringTasks();
-    console.log('Recurring tasks processed successfully');
+    await processScheduledNotifications();
+    console.log('Recurring tasks and notifications processed successfully');
   }
 );
 
