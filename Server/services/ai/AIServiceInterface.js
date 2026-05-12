@@ -2,7 +2,7 @@
  * AI Service Interface
  * Defines the contract for AI providers
  */
-class AIServiceInterface {
+export class AIServiceInterface {
   /**
    * Generate subtasks for a given task
    * @param {Object} task - The parent task
@@ -73,5 +73,3 @@ class AIServiceInterface {
     throw new Error('Method not implemented');
   }
 }
-
-module.exports = AIServiceInterface;

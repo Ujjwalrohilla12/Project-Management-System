@@ -1,10 +1,10 @@
-const AIServiceInterface = require('./AIServiceInterface');
-const OpenAI = require('openai');
+import { AIServiceInterface } from './AIServiceInterface.js';
+import OpenAI from 'openai';
 
 /**
  * OpenAI Implementation of AI Service
  */
-class OpenAIService extends AIServiceInterface {
+export class OpenAIService extends AIServiceInterface {
   constructor(apiKey) {
     super();
     this.client = new OpenAI({
@@ -366,5 +366,3 @@ Format as JSON array:
     return jsonMatch ? jsonMatch[1] || jsonMatch[0] : content;
   }
 }
-
-module.exports = OpenAIService;

@@ -1,9 +1,9 @@
-const OpenAIService = require('./OpenAIService');
-const { PrismaClient } = require('@prisma/client');
+import { OpenAIService } from './OpenAIService.js';
+import { prisma } from '../../configs/prisma.js';
 
-class AIServiceManager {
+export class AIServiceManager {
   constructor() {
-    this.prisma = new PrismaClient();
+    this.prisma = prisma;
     this.providers = new Map();
     this.currentProvider = null;
 
@@ -316,6 +316,4 @@ class AIServiceManager {
 }
 
 // Export singleton instance
-const aiServiceManager = new AIServiceManager();
-
-module.exports = aiServiceManager;
+export const aiServiceManager = new AIServiceManager();

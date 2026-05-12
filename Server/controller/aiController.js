@@ -1,7 +1,5 @@
-import aiServiceManager from '../services/ai/AIServiceManager.js';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { aiServiceManager } from '../services/ai/AIServiceManager.js';
+import { prisma } from '../configs/prisma.js';
 
 /**
  * Generate AI-powered subtasks for a task

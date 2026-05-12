@@ -33,7 +33,7 @@ model Workspace {
   ownerId     String
   image_url   String?
   createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  updatedAt   DateTime          @updatedAt @default(now())
   members     WorkspaceMember[]
   projects    Project[]
   invitations Invitation[]
@@ -99,7 +99,7 @@ model Project {
   isArchived  Boolean         @default(false)
   healthScore Int?            // 0-100, computed on write
   createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+  updatedAt   DateTime        @updatedAt @default(now())
   workspace   Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   members     ProjectMember[]
   tasks       Task[]
@@ -140,7 +140,7 @@ model Task {
   actualHours    Float?
   isRecurring    Boolean       @default(false)
   createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  updatedAt      DateTime      @updatedAt @default(now())
   project        Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
   parent         Task?         @relation("Subtasks", fields: [parentId], references: [id], onDelete: Cascade)
   subtasks       Task[]        @relation("Subtasks")
@@ -364,7 +364,7 @@ model NotificationPreference {
   deadlineReminders Boolean  @default(true)
   weeklyDigest      Boolean  @default(true)
   createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  updatedAt         DateTime @updatedAt @default(now())
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
